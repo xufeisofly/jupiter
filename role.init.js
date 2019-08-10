@@ -7,7 +7,7 @@ var workerLevel = {
 
 function getWorkerLevel() {
   // TODO: get newest level by total energy amount
-  return workerLevel[1]
+  return workerLevel[2]
 }
 
 var roleInit = {
