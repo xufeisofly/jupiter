@@ -2,12 +2,21 @@ var CREEP_INIT_ROLE = 'upgrader'
 var workerLevel = {
   1: [WORK, MOVE, CARRY],
   2: [WORK, WORK, MOVE, MOVE, CARRY],
-  3: [WORK, WORK, WORK, MOVE, MOVE, CARRY]
+  3: [WORK, WORK, WORK, MOVE, MOVE, CARRY],
+  4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY]
 }
 
 function getWorkerLevel() {
   // TODO: get newest level by total energy amount
-  return workerLevel[2]
+  var retLevel = workerLevel[1]
+  for(var k in workLevel) {
+    if(Game.spawns['Spawn1'].spawnCreep(workLevel[k], 'worker' + Game.time, { dryRun: true }) == OK) {
+      retLevel = workLevel[k]
+    } else {
+      break
+    }
+  }
+  return retLevel
 }
 
 var roleInit = {
