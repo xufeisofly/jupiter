@@ -3,7 +3,9 @@ var workerLevel = {
   1: [WORK, MOVE, CARRY],
   2: [WORK, WORK, MOVE, MOVE, CARRY],
   3: [WORK, WORK, WORK, MOVE, MOVE, CARRY],
-  4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY]
+  4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
+  5: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
+  6: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY]
 }
 
 function getWorkerLevel() {
@@ -54,19 +56,19 @@ var roleInit = {
       /* Energy targets no; construct targets: no, all act as upgraders */
       for(var name in Game.creeps) {
         Game.creeps[name].memory.role = 'upgrader'
-        Game.creeps[name].say('=> upgrader')
+        /* Game.creeps[name].say('=> upgrader') */
       }
     } else if(energyTargets.length > 0 && constructTargets.length == 0) {
       /* Energy targets yes; construct targets: no, all act as harvester */
       for(var name in Game.creeps) {
         Game.creeps[name].memory.role = 'harvester'
-        Game.creeps[name].say('=> harvester')
+        /* Game.creeps[name].say('=> harvester') */
       }
     } else if(energyTargets.length == 0 && constructTargets.length > 0) {
       /* Energy targets no; construct targets: yes, all act as builder */
       for(var name in Game.creeps) {
         Game.creeps[name].memory.role = 'builder'
-        Game.creeps[name].say('=> builder')
+        /* Game.creeps[name].say('=> builder') */
       }
     } else {
       /* Energy targets yes; construct targets: yes, half as harvester half as builder */
@@ -76,11 +78,11 @@ var roleInit = {
 
       for(var i in harvesters) {
         harvesters[i].memory.role = 'harvester'
-        harvesters[i].say('=> harvester')
+        /* harvesters[i].say('=> harvester') */
       }
       for(var i in builders) {
         builders[i].memory.role = 'builder'
-        builders[i].say('=> builder')
+        /* builders[i].say('=> builder') */
       }
     }
   }
