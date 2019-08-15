@@ -9,9 +9,9 @@ var workerLevel = {
 function getWorkerLevel() {
   // TODO: get newest level by total energy amount
   var retLevel = workerLevel[1]
-  for(var k in workLevel) {
-    if(Game.spawns['Spawn1'].spawnCreep(workLevel[k], 'worker' + Game.time, { dryRun: true }) == OK) {
-      retLevel = workLevel[k]
+  for(var k in workerLevel) {
+    if(Game.spawns['Spawn1'].spawnCreep(workerLevel[k], 'worker' + Game.time, { dryRun: true }) == OK) {
+      retLevel = workerLevel[k]
     } else {
       break
     }
