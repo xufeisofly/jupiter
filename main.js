@@ -11,7 +11,7 @@ module.exports.loop = function () {
     }
   }
 
-  roleInit.ensureAmount('worker', 6)
+  roleInit.ensureAmount('worker', 7)
   roleInit.autoAssign()
 
   for(var name in Game.creeps) {
