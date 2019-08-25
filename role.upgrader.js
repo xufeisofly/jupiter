@@ -1,4 +1,3 @@
-var rolePathFinder = require('role.pathfinder');
 var creepAction = require('creep.action');
 
 var roleUpgrader = {
