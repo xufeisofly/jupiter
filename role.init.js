@@ -1,7 +1,7 @@
 var CREEP_INIT_ROLE = 'upgrader'
 var workerLevel = {
-  1: [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
-  2: [MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
+  1: [WORK, MOVE, MOVE, CARRY, CARRY, CARRY],
+  2: [WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
   3: [WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
   4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
   5: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
@@ -63,10 +63,10 @@ var roleInit = {
       /* Energy targets yes; construct targets: no, all act as harvester */
       var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith('worker')})
       var harvesters = creeps.filter(function(creep) {
-        return creep.body.length <= 5
+        return creep.body.length <= workerLevel[2].length
       })
       var upgraders = creeps.filter(function(creep) {
-        return creep.body.length > 5
+        return creep.body.length > workerLevel[2].length
       })
 
       for(var i in harvesters) {
@@ -88,10 +88,10 @@ var roleInit = {
       var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith('worker')})
 
       var harvesters = creeps.filter(function(creep) {
-        return creep.body.length <= 5
+        return creep.body.length <= workerLevel[2].length
       })
       var builders = creeps.filter(function(creep) {
-        return creep.body.length > 5
+        return creep.body.length > workerLevel[2].length
       })
 
       for(var i in harvesters) {
