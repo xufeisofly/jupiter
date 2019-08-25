@@ -64,6 +64,7 @@ var roleInit = {
       /* Energy targets yes; construct targets: no, all act as harvester */
       var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith('worker')})
       var harvesters = creeps.filter(function(creep) {
+        /* creep under worker level 2 is for harvesting */
         return creep.body.length <= workerLevel[2].length
       })
       var upgraders = creeps.filter(function(creep) {

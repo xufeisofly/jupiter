@@ -3,6 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleInit = require('role.init');
 var towerAction = require('tower.action');
+var cons = require('constants')
 
 
 module.exports.loop = function () {
@@ -27,7 +28,7 @@ module.exports.loop = function () {
   }
 
   /* init creep amount and duty */
-  roleInit.ensureAmount('worker', 6)
+  roleInit.ensureAmount('worker', cons.MIN_WORKER_NUM)
   roleInit.autoAssign()
 
   /* creep run by role */
