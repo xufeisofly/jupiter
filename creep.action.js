@@ -22,14 +22,15 @@ var creepAction = {
     let thisRoomHarvCreeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {
       filter: (creep) => {
         return (creep.memory.role == 'harvester' && creep.memory.harvesting == true) ||
-               (creep.memory.role == 'builder' && creep.memory.building == false) ||
+               // (creep.memory.role == 'builder' && creep.memory.building == false) ||
                (creep.memory.role == 'upgrader' && creep.memory.upgrading == false)
       }
     })
     console.log(thisRoomHarvCreeps.length)
-    console.log(creep.carry.energy)
-    if(thisRoomHarvCreeps.length > cons.MAX_ROOM_HARV_CREEPS_NUM && creep.room == Game.spawns['Spawn1'].room && creep.carry.enery == 0) {
+    
+    if(thisRoomHarvCreeps.length > cons.MAX_ROOM_HARV_CREEPS_NUM && creep.room == Game.spawns['Spawn1'].room && _.sum(creep.carry) == 0) {
       /* move to another room */
+      console.log('enter')
       let newRoomPos = new RoomPosition(46, 22, 'E2S16')
       creep.moveTo(newRoomPos)
     } else {
