@@ -25,7 +25,8 @@ function getWorkerLevel() {
 var roleInit = {
   ensureAmount: function(type, num) {
     /* create a new worker when creeps number is lower than MIN */
-    var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith(type)})
+    /* var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith(type)}) */
+    var creeps = Game.creeps
     if(creeps.length < num) {
       var newName = type + Game.time
       Game.spawns['Spawn1'].spawnCreep(getWorkerLevel(), newName, {
