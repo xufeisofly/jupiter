@@ -72,7 +72,7 @@ var roleInit = {
 
       for(var i in harvesters) {
         harvesters[i].memory.role = 'harvester'
-        harvesters[i].say('h')
+        /* harvesters[i].say('h') */
       }
       for(var j in upgraders) {
         upgraders[j].memory.role = 'upgrader'
@@ -97,7 +97,7 @@ var roleInit = {
 
       for(var i in harvesters) {
         harvesters[i].memory.role = 'harvester'
-        harvesters[i].say('h')
+        /* harvesters[i].say('h') */
       }
       for(var i in builders) {
         builders[i].memory.role = 'builder'
