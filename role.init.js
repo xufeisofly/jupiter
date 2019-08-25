@@ -1,5 +1,6 @@
 var CREEP_INIT_ROLE = 'upgrader'
 var workerLevel = {
+  0: [WORK, MOVE, CARRY],
   1: [WORK, MOVE, MOVE, CARRY, CARRY, CARRY],
   2: [WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
   3: [WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
@@ -25,9 +26,8 @@ function getWorkerLevel() {
 var roleInit = {
   ensureAmount: function(type, num) {
     /* create a new worker when creeps number is lower than MIN */
-    /* var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith(type)}) */
     var creeps = Game.creeps
-    if(creeps.length < num) {
+    if(!creeps.length || creeps.length < num) {
       var newName = type + Game.time
       Game.spawns['Spawn1'].spawnCreep(getWorkerLevel(), newName, {
         memory: { role: CREEP_INIT_ROLE }
