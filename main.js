@@ -1,9 +1,9 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleAttacker = require('role.attacker');
 var roleInit = require('role.init');
 var towerAction = require('tower.action');
-var cons = require('constants')
 
 
 module.exports.loop = function () {
@@ -28,7 +28,7 @@ module.exports.loop = function () {
   }
 
   /* init creep amount and duty */
-  roleInit.ensureAmount('worker', cons.MIN_WORKER_NUM)
+  roleInit.ensureAmount('worker', 12)
   roleInit.autoAssign()
 
   /* creep run by role */
@@ -42,6 +42,9 @@ module.exports.loop = function () {
     }
     if(creep.memory.role == 'builder') {
       roleBuilder.run(creep);
+    }
+    if(creep.memory.role == 'attacker') {
+      roleAttacker.run(creep);
     }
   }
 }

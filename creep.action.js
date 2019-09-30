@@ -8,34 +8,37 @@ var isInMainRoom = function(creep) {
 var returnMainRoom = function(creep) {
   if(!isInMainRoom(creep)) {
     creep.moveTo(new RoomPosition(34, 33, Game.spawns['Spawn1'].room.name))
-    creep.say('Bye Bye')
+    creep.say('Cover Me')
   } else {
     console.log('Creep Already in main room')
   }
 }
 
-
+function shouldGoToSecRoom(creep) {
+  /* Num of creeps who are harvesting */
+  let thisRoomHarvCreeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {
+    filter: (creep) => {
+      return (creep.memory.role == 'harvester' && creep.memory.harvesting == true) ||
+             (creep.memory.role == 'builder' && creep.memory.building == false) ||
+             (creep.memory.role == 'upgrader' && creep.memory.upgrading == false)
+    }
+  })
+  console.log("harvester count in main room: ", thisRoomHarvCreeps.length)
+  return thisRoomHarvCreeps.length > cons.MAX_ROOM_HARV_CREEPS_NUM
+      && creep.room == Game.spawns['Spawn1'].room
+      && _.sum(creep.carry) == 0
+}
 
 var creepAction = {
   harvest: function(creep) {
-    /* Num of creeps who are harvesting */
-    let thisRoomHarvCreeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {
-      filter: (creep) => {
-        return (creep.memory.role == 'harvester' && creep.memory.harvesting == true) ||
-               // (creep.memory.role == 'builder' && creep.memory.building == false) ||
-               (creep.memory.role == 'upgrader' && creep.memory.upgrading == false)
-      }
-    })
-    console.log(thisRoomHarvCreeps.length)
-    
-    if(thisRoomHarvCreeps.length > cons.MAX_ROOM_HARV_CREEPS_NUM && creep.room == Game.spawns['Spawn1'].room && _.sum(creep.carry) == 0) {
+    if (shouldGoToSecRoom(creep)) {
       /* move to another room */
-      console.log('enter')
       let newRoomPos = new RoomPosition(46, 22, 'E2S16')
       creep.moveTo(newRoomPos)
+      creep.say('Follow Me')
     } else {
       if(!isInMainRoom(creep)) {
-        creep.say('Rob Rob')
+        creep.say('Hold This Position')
       }
       let closestSource = creep.pos.findClosestByRange(FIND_SOURCES)
       if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
@@ -85,6 +88,24 @@ var creepAction = {
     } else {
       returnMainRoom(creep)
     }
+  },
+  findAndAttack: function(creep) {
+    /* if(isInMainRoom(creep)) { */
+      let newRoomPos = new RoomPosition(46, 22, 'E1S14')
+      creep.moveTo(newRoomPos)
+    /* } else { */
+      var closestHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+      if(closestHostile) {
+        if(creep.attack(closestHostile) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(closestHostile);
+        }
+        creep.memory.attacking = true
+      } else {
+        creep.memory.attacking = false
+        /* returnMainRoom(creep) */
+      }
+    creep.say('love you')
+    /* } */
   }
 }
 

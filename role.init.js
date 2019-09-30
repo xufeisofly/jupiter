@@ -1,9 +1,9 @@
 var CREEP_INIT_ROLE = 'upgrader'
 var workerLevel = {
-  /* 0: [WORK, MOVE, CARRY], */
+  0: [WORK, MOVE, CARRY],
   1: [WORK, MOVE, MOVE, CARRY, CARRY, CARRY],
   2: [WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
-  3: [WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
+  3: [WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY],
   4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
   5: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
   6: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
@@ -23,11 +23,25 @@ function getWorkerLevel() {
   return retLevel
 }
 
+function getCreepsByType(type) {
+  return Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith(type)})
+}
+
+function isHarvester(creep) {
+  return creep.body.length <= workerLevel[3].length
+}
+
 var roleInit = {
   ensureAmount: function(type, num) {
-    /* create a new worker when creeps number is lower than MIN */
-    var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS)
-    if(creeps.length < num) {
+    length = 0
+    for(var room in Game.rooms) {
+      creeps = Game.rooms[room].find(FIND_CREEPS)
+      length += creeps.length
+    }
+
+    console.log("total creeps count: ", length)
+
+    if(length < num) {
       var newName = type + Game.time
       Game.spawns['Spawn1'].spawnCreep(getWorkerLevel(), newName, {
         memory: { role: CREEP_INIT_ROLE }
@@ -56,19 +70,19 @@ var roleInit = {
 
     if(energyTargets.length == 0 && constructTargets.length == 0) {
       /* Energy targets no; construct targets: no, all act as upgraders */
-      for(var name in Game.creeps) {
+      var creeps = getCreepsByType('worker')
+      for(var name in creeps) {
         Game.creeps[name].memory.role = 'upgrader'
         Game.creeps[name].say('u')
       }
     } else if(energyTargets.length > 0 && constructTargets.length == 0) {
       /* Energy targets yes; construct targets: no, all act as harvester */
-      var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith('worker')})
+      var creeps = getCreepsByType('worker')
       var harvesters = creeps.filter(function(creep) {
-        /* creep under worker level 2 is for harvesting */
-        return creep.body.length <= workerLevel[2].length
+        return isHarvester(creep)
       })
       var upgraders = creeps.filter(function(creep) {
-        return creep.body.length > workerLevel[2].length
+        return !isHarvester(creep)
       })
 
       for(var i in harvesters) {
@@ -81,19 +95,19 @@ var roleInit = {
       }
     } else if(energyTargets.length == 0 && constructTargets.length > 0) {
       /* Energy targets no; construct targets: yes, all act as builder */
-      for(var name in Game.creeps) {
+      var creeps = getCreepsByType('worker')
+      for(var name in creeps) {
         Game.creeps[name].memory.role = 'builder'
         Game.creeps[name].say('b')
       }
     } else {
       /* Energy targets yes; construct targets: yes, half as harvester half as builder */
-      var creeps = Game.spawns['Spawn1'].room.find(FIND_CREEPS, {filter: (creep) => creep.name.startsWith('worker')})
-
+      var creeps = getCreepsByType('worker')
       var harvesters = creeps.filter(function(creep) {
-        return creep.body.length <= workerLevel[2].length
+        return isHarvester(creep)
       })
       var builders = creeps.filter(function(creep) {
-        return creep.body.length > workerLevel[2].length
+        return !isHarvester(creep)
       })
 
       for(var i in harvesters) {
@@ -105,6 +119,13 @@ var roleInit = {
         builders[i].say('b')
       }
     }
+
+    /* let attackers = getCreepsByType('attacker')
+     * console.log(attackers[0], 'hi')
+     * for(var i in attackers) {
+     *   attackers[i].memory.role = 'attacker'
+     *   attackers[i].say('love you')
+     * } */
   }
 }
 
