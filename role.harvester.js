@@ -4,7 +4,11 @@ var roleHarvester = {
 
   /** @param {Creep} creep **/
   run: function(creep) {
-	if(creep.carry.energy < creep.carryCapacity) {
+    if (creep.carry.energy == 0) {
+      creep.memory.harvesting = true
+    }
+
+	if(creep.carry.energy < creep.carryCapacity && creep.memory.harvesting == true) {
       creepAction.harvest(creep)
       creep.memory.harvesting = true
     }

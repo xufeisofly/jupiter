@@ -29,18 +29,30 @@ function shouldGoToSecRoom(creep) {
       && _.sum(creep.carry) == 0
 }
 
+function moveToRoom(creep, room) {
+  let newRoomPos = new RoomPosition(46, 22, room)
+  creep.moveTo(newRoomPos)
+  creep.say('Follow Me')
+}
+
+function _transfer(creep, target) {
+  if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    let ret = rolePathFinder.run(creep, target)
+    creep.move(creep.pos.getDirectionTo(ret.path[0]))
+  }
+}
+
 var creepAction = {
   harvest: function(creep) {
-    if (shouldGoToSecRoom(creep)) {
+    let closestSource = creep.pos.findClosestByRange(FIND_SOURCES)
+    if (shouldGoToSecRoom(creep) || closestSource.energy < 100) {
       /* move to another room */
-      let newRoomPos = new RoomPosition(46, 22, 'E2S16')
-      creep.moveTo(newRoomPos)
-      creep.say('Follow Me')
+      moveToRoom(creep, 'E2S16')
     } else {
       if(!isInMainRoom(creep)) {
-        creep.say('Hold This Position')
+        creep.say('Love You')
       }
-      let closestSource = creep.pos.findClosestByRange(FIND_SOURCES)
+
       if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
         let ret = rolePathFinder.run(creep, closestSource)
         creep.move(creep.pos.getDirectionTo(ret.path[0]))
@@ -55,10 +67,18 @@ var creepAction = {
                  structure.energy < structure.energyCapacity;
         }
       });
-      if(targets.length > 0) {
-        if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          let ret = rolePathFinder.run(creep, targets[0])
-          creep.move(creep.pos.getDirectionTo(ret.path[0]))
+      if (targets.length > 0) {
+        _transfer(creep, targets[0])
+      } else {
+        let storages = creep.room.find(FIND_STRUCTURES, {
+          filter: { structureType: STRUCTURE_STORAGE }
+        })
+        console.log(storages)
+        for (var id in storages) {
+          var thisStorage = storages[id]
+          if (thisStorage.store[RESOURCE_ENERGY] < thisStorage.storeCapacity) {
+            _transfer(creep, thisStorage)
+          }
         }
       }
     } else {

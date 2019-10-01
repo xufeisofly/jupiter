@@ -2,9 +2,9 @@ var CREEP_INIT_ROLE = 'upgrader'
 var workerLevel = {
   0: [WORK, MOVE, CARRY],
   1: [WORK, MOVE, MOVE, CARRY, CARRY, CARRY],
-  2: [WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
-  3: [WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY],
-  4: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY],
+  2: [WORK, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY],
+  3: [WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY],
+  4: [WORK, WORK, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY],
   5: [WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
   6: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
   7: [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY]
@@ -28,7 +28,7 @@ function getCreepsByType(type) {
 }
 
 function isHarvester(creep) {
-  return creep.body.length <= workerLevel[3].length
+  return creep.body.length <= workerLevel[4].length
 }
 
 var roleInit = {
@@ -87,7 +87,6 @@ var roleInit = {
 
       for(var i in harvesters) {
         harvesters[i].memory.role = 'harvester'
-        /* harvesters[i].say('h') */
       }
       for(var j in upgraders) {
         upgraders[j].memory.role = 'upgrader'
@@ -120,12 +119,12 @@ var roleInit = {
       }
     }
 
-    /* let attackers = getCreepsByType('attacker')
-     * console.log(attackers[0], 'hi')
-     * for(var i in attackers) {
-     *   attackers[i].memory.role = 'attacker'
-     *   attackers[i].say('love you')
-     * } */
+    let attackers = getCreepsByType('attacker')
+    console.log(attackers[0], 'hi')
+    for(var i in attackers) {
+      attackers[i].memory.role = 'attacker'
+      attackers[i].say('love you')
+    }
   }
 }
 

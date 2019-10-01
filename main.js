@@ -28,7 +28,7 @@ module.exports.loop = function () {
   }
 
   /* init creep amount and duty */
-  roleInit.ensureAmount('worker', 12)
+  roleInit.ensureAmount('worker', 6)
   roleInit.autoAssign()
 
   /* creep run by role */
