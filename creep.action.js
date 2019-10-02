@@ -2,12 +2,20 @@ var cons = require('constants');
 var rolePathFinder = require('role.pathfinder');
 
 var isInMainRoom = function(creep) {
-  return creep.room == Game.spawns['Spawn1'].room
+  let spawn = creep.name.match(/.*(.{6})/)[1]
+  if (!Game.spawns[spawn]) {
+    return true
+  }
+  return creep.room == Game.spawns[spawn].room
 }
 
 var returnMainRoom = function(creep) {
+  let spawn = creep.name.match(/.*(.{6})/)[1]
+  if (!Game.spawns[spawn]) {
+    return
+  }
   if(!isInMainRoom(creep)) {
-    creep.moveTo(new RoomPosition(34, 33, Game.spawns['Spawn1'].room.name))
+    creep.moveTo(new RoomPosition(34, 33, Game.spawns[spawn].room.name))
     creep.say('Cover Me')
   } else {
     console.log('Creep Already in main room')
@@ -30,7 +38,7 @@ function shouldGoToSecRoom(creep) {
 }
 
 function moveToRoom(creep, room) {
-  let newRoomPos = new RoomPosition(46, 22, room)
+  let newRoomPos = new RoomPosition(40, 26, room)
   creep.moveTo(newRoomPos)
   creep.say('Follow Me')
 }
@@ -42,15 +50,31 @@ function _transfer(creep, target) {
   }
 }
 
+function _attack(creep, target) {
+  if(creep.attack(target) == ERR_NOT_IN_RANGE) {
+    let ret = rolePathFinder.run(creep, target)
+    creep.move(creep.pos.getDirectionTo(ret.path[0]))
+  }
+}
+
+function _claim(creep, controller) {
+  if (controller) {
+    if (creep.claimController(controller) == ERR_NOT_IN_RANGE) {
+      let ret = rolePathFinder.run(creep, controller)
+      creep.move(creep.pos.getDirectionTo(ret.path[0]))
+    }
+  }
+}
+
 var creepAction = {
   harvest: function(creep) {
     let closestSource = creep.pos.findClosestByRange(FIND_SOURCES)
-    if (shouldGoToSecRoom(creep) || closestSource.energy < 100) {
+    if (shouldGoToSecRoom(creep) || closestSource.energy < 10) {
       /* move to another room */
       moveToRoom(creep, 'E2S16')
     } else {
       if(!isInMainRoom(creep)) {
-        creep.say('Love You')
+        creep.say('❤️')
       }
 
       if(creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
@@ -86,14 +110,11 @@ var creepAction = {
     }
   },
   build: function(creep) {
-    if(isInMainRoom(creep)) {
-      var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-      if(targets.length > 0) {
-
-        if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-          let ret = rolePathFinder.run(creep, targets[0])
-          creep.move(creep.pos.getDirectionTo(ret.path[0]))
-        }
+    var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+    if(isInMainRoom(creep) || (targets.length > 0)) {
+      if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+        let ret = rolePathFinder.run(creep, targets[0])
+        creep.move(creep.pos.getDirectionTo(ret.path[0]))
       }
     } else {
       returnMainRoom(creep)
@@ -110,22 +131,23 @@ var creepAction = {
     }
   },
   findAndAttack: function(creep) {
-    /* if(isInMainRoom(creep)) { */
-      let newRoomPos = new RoomPosition(46, 22, 'E1S14')
-      creep.moveTo(newRoomPos)
-    /* } else { */
+    if(isInMainRoom(creep)) {
+      moveToRoom(creep, 'E2S16')
+    } else {
+      _claim(creep, creep.room.controller)
       var closestHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
       if(closestHostile) {
-        if(creep.attack(closestHostile) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(closestHostile);
-        }
+        _attack(creep, closestHostile)
         creep.memory.attacking = true
       } else {
         creep.memory.attacking = false
         /* returnMainRoom(creep) */
       }
-    creep.say('love you')
-    /* } */
+      creep.say('❤️')
+    }
+  },
+  claimController: function(creep, controller) {
+    _claim(creep, controller)
   }
 }
 
