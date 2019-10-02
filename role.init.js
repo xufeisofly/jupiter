@@ -8,7 +8,8 @@ var workerLevel = {
   4: [WORK, WORK, WORK, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY],
   5: [WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY],
   6: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY],
-  7: [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
+  7: [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY],
+  8: [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 function getWorkerLevel(spawn='Spawn1') {
@@ -61,8 +62,15 @@ function numOfRole(type, role, spawn='Spawn1') {
 }
 
 function isHarvester(creep, spawn='Spawn1') {
-  let harvNum = numOfRole('worker', 'harvester', spawn)
-  return creep.body.length <= workerLevel[5].length
+  // creep.body 最大的不是 harvester，其他的都是
+  let creeps = Game.spawns[spawn].room.find(FIND_CREEPS, {
+    filter: (c) => { return c.name.startsWith('worker') && c.name.endsWith(spawn) }
+  })
+  creeps.sort((a, b) => (a.body.length > b.body.length) ? -1 : 1)
+
+  let bigBodyLen = creeps[0].body.length
+  let nonHarCreeps = creeps.filter((c) => c.body.length == bigBodyLen)
+  return !nonHarCreeps.includes(creep)
 }
 
 var roleInit = {

@@ -87,7 +87,7 @@ var creepAction = {
     if(isInMainRoom(creep)) {
       var targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-          return ([STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_SPAWN].includes(structure.structureType)) &&
+          return ([STRUCTURE_TOWER, STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(structure.structureType)) &&
                  structure.energy < structure.energyCapacity;
         }
       });
