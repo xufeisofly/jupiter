@@ -132,7 +132,8 @@ var creepAction = {
   },
   findAndAttack: function(creep) {
     if(isInMainRoom(creep)) {
-      moveToRoom(creep, 'E2S16')
+      creep.moveTo(Game.flags['attackFlag1'])
+      /* moveToRoom(creep, 'E2S16') */
     } else {
       _claim(creep, creep.room.controller)
       var closestHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
