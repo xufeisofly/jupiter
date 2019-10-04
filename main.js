@@ -1,10 +1,10 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleAttacker = require('role.attacker');
 var roleInit = require('role.init');
 var towerAction = require('tower.action');
-var cons = require('constants')
-
+var cons = require('constants');
 
 module.exports.loop = function () {
   /* delete memorys */
@@ -15,21 +15,26 @@ module.exports.loop = function () {
   }
 
   /* tower action */
-  var towers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
-    filter: (structure) => {
-      return (structure.structureType == STRUCTURE_TOWER)
-    }
-  })
-  if(towers.length > 0) {
-    for(var i in towers) {
-      towerAction.tryRepair(towers[i])
-      towerAction.tryAttack(towers[i])
+  for (var spawn of cons.SPAWNS) {
+    var towers = Game.spawns[spawn].room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (structure.structureType == STRUCTURE_TOWER)
+      }
+    })
+    if(towers.length > 0) {
+      for(var i in towers) {
+        towerAction.tryRepair(towers[i])
+        towerAction.tryAttack(towers[i])
+      }
     }
   }
 
   /* init creep amount and duty */
-  roleInit.ensureAmount('worker', cons.MIN_WORKER_NUM)
-  roleInit.autoAssign()
+  roleInit.ensureAmount('worker', 6, 'Spawn1')
+  roleInit.ensureAmount('worker', 6, 'Spawn2')
+  /* roleInit.ensureAmount('attacker', 1) */
+  roleInit.autoAssign('Spawn1')
+  roleInit.autoAssign('Spawn2')
 
   /* creep run by role */
   for(var name in Game.creeps) {
@@ -42,6 +47,9 @@ module.exports.loop = function () {
     }
     if(creep.memory.role == 'builder') {
       roleBuilder.run(creep);
+    }
+    if(creep.memory.role == 'attacker') {
+      roleAttacker.run(creep);
     }
   }
 }
