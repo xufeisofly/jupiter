@@ -131,14 +131,25 @@ var creepAction = {
     }
   },
   findAndAttack: function(creep) {
+    var flag = Game.flags['attackFlag1']
+    console.log(flag)
+    creep.moveTo(flag)
     if(isInMainRoom(creep)) {
-      creep.moveTo(Game.flags['attackFlag1'])
       /* moveToRoom(creep, 'E2S16') */
     } else {
-      _claim(creep, creep.room.controller)
+      /* _claim(creep, creep.room.controller) */
       var closestHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+      var closestStruct = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES)
       if(closestHostile) {
         _attack(creep, closestHostile)
+        creep.memory.attacking = true
+      } else {
+        creep.memory.attacking = false
+        /* returnMainRoom(creep) */
+      }
+      console.log(closestStruct)
+      if(closestStruct) {
+        _attack(creep, closestStruct)
         creep.memory.attacking = true
       } else {
         creep.memory.attacking = false

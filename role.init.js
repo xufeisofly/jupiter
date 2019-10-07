@@ -110,16 +110,22 @@ var roleInit = {
         return ([STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_SPAWN].includes(structure.structureType)) && structure.energy < structure.energyCapacity
       }
     })
+    var storeTargets = Game.spawns[spawn].room.find(FIND_STRUCTURES, {
+      filter: { structureType: STRUCTURE_STORAGE }
+    })
+    storeTargets = storeTargets.filter(function(t) {
+      return t.store[RESOURCE_ENERGY] < t.storeCapacity
+    })
     var constructTargets = Game.spawns[spawn].room.find(FIND_CONSTRUCTION_SITES)
 
-    if(energyTargets.length == 0 && constructTargets.length == 0) {
+    if(energyTargets.length == 0 && storeTargets.length == 0 && constructTargets.length == 0) {
       /* Energy targets no; construct targets: no, all act as upgraders */
       var creeps = getCreepsByType('worker', spawn)
       for(var name in creeps) {
         creeps[name].memory.role = 'upgrader'
         creeps[name].say('u')
       }
-    } else if(energyTargets.length > 0 && constructTargets.length == 0) {
+    } else if((energyTargets.length > 0 || storeTargets.length > 0) && constructTargets.length == 0) {
       /* Energy targets yes; construct targets: no, all act as harvester */
       var creeps = getCreepsByType('worker', spawn)
       var harvesters = creeps.filter(function(creep) {
@@ -136,7 +142,7 @@ var roleInit = {
         upgraders[j].memory.role = 'upgrader'
         upgraders[j].say('u')
       }
-    } else if(energyTargets.length == 0 && constructTargets.length > 0) {
+    } else if(energyTargets.length == 0 && storeTargets.length == 0 && constructTargets.length > 0) {
       /* Energy targets no; construct targets: yes, all act as builder */
       var creeps = getCreepsByType('worker', spawn)
       for(var name in creeps) {

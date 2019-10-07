@@ -30,7 +30,7 @@ module.exports.loop = function () {
   }
 
   /* init creep amount and duty */
-  roleInit.ensureAmount('worker', 6, 'Spawn1')
+  roleInit.ensureAmount('worker', 7, 'Spawn1')
   roleInit.ensureAmount('worker', 6, 'Spawn2')
   /* roleInit.ensureAmount('attacker', 1) */
   roleInit.autoAssign('Spawn1')
