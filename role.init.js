@@ -169,9 +169,16 @@ var roleInit = {
       }
     }
 
+    // attacker
     let attackers = getCreepsByType('attacker', spawn)
     for(var i in attackers) {
       attackers[i].memory.role = 'attacker'
+    }
+
+    // miner
+    let miners = getCreepsByType('miner', spawn)
+    for(var i in miners) {
+      miners[i].memory.role = 'miner'
     }
   }
 }

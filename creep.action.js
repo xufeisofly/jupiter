@@ -160,6 +160,9 @@ var creepAction = {
   },
   claimController: function(creep, controller) {
     _claim(creep, controller)
+  },
+  mine: function(creep) {
+    let mineSource = creep.pos.findClosestByRange
   }
 }
 
